@@ -54,6 +54,8 @@ class GuildEmoji(Emoji):
         Whether this emoji is managed by an integration.
     roles : list(snowflake)
         Roles this emoji is attached to.
+    animated : bool
+        Whether this emoji is animated.
     """
     id = Field(snowflake)
     guild_id = Field(snowflake)
@@ -61,8 +63,11 @@ class GuildEmoji(Emoji):
     require_colons = Field(bool)
     managed = Field(bool)
     roles = ListField(snowflake)
+    animated = Field(bool)
 
     def __str__(self):
+        if self.animated:
+            return u'<a:{}:{}>'.format(self.name, self.id)
         return u'<:{}:{}>'.format(self.name, self.id)
 
     def update(self, **kwargs):
@@ -73,6 +78,8 @@ class GuildEmoji(Emoji):
 
     @property
     def url(self):
+        if self.animated:
+            return 'https://discordapp.com/api/emojis/{}.gif'.format(self.id)
         return 'https://discordapp.com/api/emojis/{}.png'.format(self.id)
 
     @cached_property
